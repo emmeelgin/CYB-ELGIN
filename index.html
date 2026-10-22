@@ -20,6 +20,43 @@
         .assignment-hub:hover {
             background: #d94b89;
         }
+        .teacher-tools {
+            max-width: 900px;
+            margin: 26px auto;
+            padding: 22px;
+            border: 2px solid #f3c6dc;
+            border-radius: 16px;
+            background: #fff8fb;
+            text-align: left;
+            font: 16px/1.5 Arial, sans-serif;
+        }
+        .teacher-tools summary { color: #a32f68; font-size: 1.2rem; font-weight: 700; cursor: pointer; }
+        .teacher-tools label { display: block; margin: 10px 0 4px; font-weight: 700; }
+        .teacher-tools input, .teacher-tools textarea, .teacher-tools select {
+            width: 100%; padding: 10px; border: 1px solid #9aabba; border-radius: 7px; font: inherit;
+        }
+        .teacher-tools textarea { min-height: 80px; resize: vertical; }
+        .teacher-tools button {
+            margin: 10px 6px 0 0; padding: 10px 14px; border: 0; border-radius: 8px;
+            background: #2369a8; color: white; font-weight: 700; cursor: pointer;
+        }
+        .teacher-tools button.soft { background: #e4f1fc; color: #174e7c; }
+        .teacher-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .teacher-grid .wide { grid-column: 1 / -1; }
+        .teacher-tools [hidden] { display: none !important; }
+        .teacher-message { padding: 10px; border-radius: 7px; background: #e4f1fc; }
+        .teacher-message.error { background: #ffebeb; color: #8e2525; }
+        .teacher-message.success { background: #e1f5e8; color: #195b34; }
+        .teacher-assignment { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 12px; border: 1px solid #dce3eb; border-radius: 9px; background: white; }
+        .teacher-assignment p { margin: 4px 0; color: #59677a; }
+        .teacher-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+        .teacher-actions button { margin: 0; }
+        .student-roster { margin: 24px 0; padding: 16px; border: 1px solid #dce3eb; border-radius: 10px; background: white; }
+        .student-roster h3 { margin-top: 0; }
+        .student-roster textarea { min-height: 100px; }
+        .roster-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 0; border-top: 1px solid #e4eaf0; }
+        .roster-row button { margin: 0; }
+        @media (max-width: 620px) { .teacher-grid { grid-template-columns: 1fr; } }
         body {
             font-family: 'IBM Plex Serif', serif;
             text-align: center;
@@ -76,6 +113,60 @@
     <h1>Mrs. Wright: Cyber 101, AP CSP, AI, PD Tools</h1>
     <p>Select a tool to get started:</p>
     <a class="assignment-hub" href="class-assignments.html">Class assignments: what’s coming up?</a>
+    <details id="teacher-tools" class="teacher-tools">
+        <summary>Teacher assignment editor</summary>
+        <p>Create assignments, save drafts, and publish work for students. Students only see published assignments on the class assignments page.</p>
+        <div id="teacher-message" class="teacher-message" role="status" hidden></div>
+        <form id="teacher-login">
+            <div class="teacher-grid">
+                <div><label for="teacher-email">Teacher email</label><input id="teacher-email" type="email" autocomplete="username" required></div>
+                <div><label for="teacher-password">Password</label><input id="teacher-password" type="password" autocomplete="current-password" required></div>
+            </div>
+            <button type="submit">Sign in</button>
+            <a href="#teacher-setup">First-time setup</a>
+        </form>
+        <div id="teacher-editor" hidden>
+            <p id="teacher-identity"></p>
+            <button id="teacher-signout" class="soft" type="button">Sign out</button>
+            <button id="import-class-tools" type="button" hidden>Import existing class tools as drafts</button>
+            <section class="student-roster" aria-labelledby="roster-heading">
+                <h3 id="roster-heading">Student roster</h3>
+                <p>Add one student per line in <code>First name,Last name</code> format. Only names on this list can sign in and save progress.</p>
+                <form id="student-roster-form">
+                    <label for="student-roster-input">Student names</label>
+                    <textarea id="student-roster-input" placeholder="Jordan,Lee&#10;Taylor,Nguyen" required></textarea>
+                    <button id="add-roster-students" type="submit">Add students</button>
+                </form>
+                <div id="student-roster-list" aria-live="polite"></div>
+            </section>
+            <form id="teacher-assignment-form">
+                <h3 id="teacher-form-title">Add an assignment</h3>
+                <div class="teacher-grid">
+                    <div><label for="teacher-assignment-title">Assignment name</label><input id="teacher-assignment-title" maxlength="120" required></div>
+                    <div><label for="teacher-assignment-course">Class</label><input id="teacher-assignment-course" list="teacher-course-options" value="Cyber 101" required>
+                        <datalist id="teacher-course-options"><option value="Cyber 101"></option><option value="AI Class"></option><option value="ACCEL Cyber Immersion Day"></option><option value="AP CSP"></option></datalist>
+                    </div>
+                    <div class="wide"><label for="teacher-assignment-description">Student instructions</label><textarea id="teacher-assignment-description" maxlength="2000"></textarea></div>
+                    <div class="wide"><label for="teacher-assignment-url">Activity link (optional)</label><input id="teacher-assignment-url" type="text" placeholder="Example: binaryToDecimal.html or a Canvas link"></div>
+                    <div><label for="teacher-assignment-due-date">Due date (optional)</label><input id="teacher-assignment-due-date" type="date"></div>
+                    <div><label for="teacher-assignment-status">Visibility</label><select id="teacher-assignment-status"><option value="draft">Draft — only teachers can see it</option><option value="published">Published — students can see it</option></select></div>
+                </div>
+                <button id="teacher-save" type="submit">Save assignment</button>
+                <button id="teacher-cancel-edit" class="soft" type="button" hidden>Cancel edit</button>
+            </form>
+            <div id="teacher-assignment-list"></div>
+        </div>
+        <details id="teacher-setup">
+            <summary>Connect Supabase and set up teacher access</summary>
+            <ol>
+                <li>Run <code>supabase-setup.sql</code> in your Supabase project's SQL Editor.</li>
+                <li>If you ran an earlier version, run the updated script again. It adds the due-date column and student roster/progress functions.</li>
+                <li>Create your teacher account in Supabase Authentication, then run the final SQL statement after replacing <code>teacher@example.com</code> with your account email.</li>
+                <li>After signing in, add your students in the roster above. Enter one name per line as <code>First name,Last name</code>.</li>
+                <li>The public project URL and publishable key are configured in this page. Never put your database password or a service-role/secret key in website code.</li>
+            </ol>
+        </details>
+    </details>
 
     <h2>Cyber 101 Practice Sets</h2>
     <div class="button-row">
@@ -147,5 +238,365 @@
     <footer>
          These tools were designed by Mary Clair Wright and the ASCTE Instructional Design Team for instructional use only.<br>
         &copy; 2025&ndash;2026 Alabama School of Cyber Technology and Engineering. All rights reserved.
+    </footer>
+    <script>
+        const SUPABASE_URL = "https://ooanwynnylxfotgkjnvw.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_4f2BeBb86Rn-C0Sjrqh5Kw_M2mri7id";
+        const SESSION_STORAGE_KEY = "wright-class-board-session";
+        const teacherMessage = document.getElementById("teacher-message");
+        const teacherLogin = document.getElementById("teacher-login");
+        const teacherEditor = document.getElementById("teacher-editor");
+        const teacherList = document.getElementById("teacher-assignment-list");
+        const studentRosterList = document.getElementById("student-roster-list");
+        let teacherSession = readTeacherSession();
+        let teacherAssignments = [];
+        let editingAssignmentId = null;
+
+        function readTeacherSession() {
+            try {
+                return JSON.parse(sessionStorage.getItem(SESSION_STORAGE_KEY) || "null");
+            } catch {
+                sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                return null;
+            }
+        }
+
+        function teacherNotice(text, kind) {
+            teacherMessage.textContent = text;
+            teacherMessage.className = "teacher-message" + (kind ? " " + kind : "");
+            teacherMessage.hidden = !text;
+        }
+
+        async function teacherRequest(path, options, retrying) {
+            const headers = new Headers(options && options.headers ? options.headers : {});
+            headers.set("apikey", SUPABASE_ANON_KEY);
+            if (teacherSession) headers.set("Authorization", "Bearer " + teacherSession.access_token);
+            if (options && options.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+            const response = await fetch(SUPABASE_URL + path, { ...options, headers });
+            if (response.status === 401 && teacherSession && teacherSession.refresh_token && !retrying) {
+                const refreshed = await fetch(SUPABASE_URL + "/auth/v1/token?grant_type=refresh_token", {
+                    method: "POST",
+                    headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+                    body: JSON.stringify({ refresh_token: teacherSession.refresh_token })
+                });
+                const sessionData = await refreshed.json();
+                if (refreshed.ok) {
+                    teacherSession = sessionData;
+                    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(teacherSession));
+                    return teacherRequest(path, options, true);
+                }
+                teacherSession = null;
+                sessionStorage.removeItem(SESSION_STORAGE_KEY);
+            }
+            const text = await response.text();
+            let data = null;
+            if (text) {
+                try { data = JSON.parse(text); } catch { data = text; }
+            }
+            if (!response.ok) {
+                throw new Error(data && (data.message || data.msg || data.error_description) || "Request failed (" + response.status + "). Check the Supabase setup.");
+            }
+            return data;
+        }
+
+        function teacherSafeUrl(value) {
+            if (!value) return "";
+            try {
+                const parsed = new URL(value, window.location.href);
+                return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.href : "";
+            } catch { return ""; }
+        }
+
+        function resetTeacherForm() {
+            editingAssignmentId = null;
+            document.getElementById("teacher-assignment-form").reset();
+            document.getElementById("teacher-assignment-course").value = "Cyber 101";
+            document.getElementById("teacher-assignment-status").value = "draft";
+            document.getElementById("teacher-form-title").textContent = "Add an assignment";
+            document.getElementById("teacher-save").textContent = "Save assignment";
+            document.getElementById("teacher-cancel-edit").hidden = true;
+        }
+
+        function renderTeacherAssignments() {
+            teacherList.replaceChildren();
+            const sorted = [...teacherAssignments].sort((a, b) => a.course.localeCompare(b.course) || a.title.localeCompare(b.title));
+            for (const item of sorted) {
+                const row = document.createElement("article");
+                row.className = "teacher-assignment";
+                const info = document.createElement("div");
+                const title = document.createElement("strong");
+                title.textContent = item.title;
+                const detail = document.createElement("p");
+                detail.textContent = item.course + (item.description ? " · " + item.description : "");
+                const status = document.createElement("span");
+                status.textContent = item.status === "published" ? "Published" : "Draft";
+                info.append(title, detail, status);
+                const actions = document.createElement("div");
+                actions.className = "teacher-actions";
+                const edit = document.createElement("button");
+                edit.className = "soft";
+                edit.type = "button";
+                edit.textContent = "Edit";
+                edit.addEventListener("click", () => {
+                    editingAssignmentId = item.id;
+                    document.getElementById("teacher-assignment-title").value = item.title;
+                    document.getElementById("teacher-assignment-course").value = item.course;
+                    document.getElementById("teacher-assignment-description").value = item.description || "";
+                    document.getElementById("teacher-assignment-url").value = item.resource_url || "";
+                    document.getElementById("teacher-assignment-due-date").value = item.due_date || "";
+                    document.getElementById("teacher-assignment-status").value = item.status;
+                    document.getElementById("teacher-form-title").textContent = "Edit assignment";
+                    document.getElementById("teacher-save").textContent = "Save changes";
+                    document.getElementById("teacher-cancel-edit").hidden = false;
+                    document.getElementById("teacher-assignment-title").focus();
+                });
+                const toggle = document.createElement("button");
+                toggle.type = "button";
+                toggle.textContent = item.status === "published" ? "Unpublish" : "Publish";
+                toggle.addEventListener("click", () => updateTeacherAssignment(item, { status: item.status === "published" ? "draft" : "published" }));
+                const remove = document.createElement("button");
+                remove.className = "soft";
+                remove.type = "button";
+                remove.textContent = "Delete";
+                remove.addEventListener("click", async () => {
+                    if (!window.confirm("Delete “" + item.title + "”? This cannot be undone.")) return;
+                    try {
+                        await teacherRequest("/rest/v1/assignments?id=eq." + encodeURIComponent(item.id), { method: "DELETE" });
+                        await loadTeacherAssignments();
+                        teacherNotice("Assignment deleted.", "success");
+                    } catch (error) { teacherNotice(error.message, "error"); }
+                });
+                actions.append(edit, toggle, remove);
+                row.append(info, actions);
+                teacherList.append(row);
+            }
+            document.getElementById("import-class-tools").hidden = teacherAssignments.length > 0;
+        }
+
+        function renderStudentRoster(students) {
+            studentRosterList.replaceChildren();
+            if (!students.length) {
+                const empty = document.createElement("p");
+                empty.textContent = "No students added yet.";
+                studentRosterList.append(empty);
+                return;
+            }
+            for (const student of students) {
+                const row = document.createElement("div");
+                row.className = "roster-row";
+                const name = document.createElement("span");
+                name.textContent = student.first_name + " " + student.last_name;
+                const remove = document.createElement("button");
+                remove.type = "button";
+                remove.className = "soft";
+                remove.textContent = "Remove";
+                remove.setAttribute("aria-label", "Remove " + name.textContent + " from roster");
+                remove.addEventListener("click", async () => {
+                    if (!window.confirm("Remove " + name.textContent + " from the roster? Their saved progress will also be deleted.")) return;
+                    try {
+                        await teacherRequest("/rest/v1/rpc/remove_student_from_roster", {
+                            method: "POST",
+                            body: JSON.stringify({ p_first_name: student.first_name, p_last_name: student.last_name })
+                        });
+                        await loadStudentRoster();
+                        teacherNotice(name.textContent + " removed from the roster.", "success");
+                    } catch (error) {
+                        teacherNotice(error.message, "error");
+                    }
+                });
+                row.append(name, remove);
+                studentRosterList.append(row);
+            }
+        }
+
+        async function loadStudentRoster() {
+            const students = await teacherRequest("/rest/v1/rpc/list_student_roster", {
+                method: "POST",
+                body: "{}"
+            });
+            renderStudentRoster(students);
+        }
+
+        async function loadTeacherAssignments() {
+            teacherAssignments = await teacherRequest("/rest/v1/assignments?select=*&order=position.asc,created_at.desc");
+            renderTeacherAssignments();
+        }
+
+        async function checkTeacherAccess() {
+            if (!teacherSession) {
+                teacherLogin.hidden = false;
+                teacherEditor.hidden = true;
+                return;
+            }
+            try {
+                const rows = await teacherRequest("/rest/v1/teachers?select=user_id&user_id=eq." + encodeURIComponent(teacherSession.user.id));
+                teacherLogin.hidden = rows.length > 0;
+                teacherEditor.hidden = rows.length === 0;
+                if (!rows.length) {
+                    teacherNotice("This account does not have teacher access yet. Follow the setup instructions above to grant access.", "error");
+                    return;
+                }
+                document.getElementById("teacher-identity").textContent = "Signed in as " + teacherSession.user.email;
+                teacherNotice("", "");
+                await loadTeacherAssignments();
+                await loadStudentRoster();
+            } catch (error) {
+                teacherNotice(error.message, "error");
+            }
+        }
+
+        async function updateTeacherAssignment(item, changes) {
+            try {
+                await teacherRequest("/rest/v1/assignments?id=eq." + encodeURIComponent(item.id), {
+                    method: "PATCH",
+                    headers: { Prefer: "return=minimal" },
+                    body: JSON.stringify(changes)
+                });
+                await loadTeacherAssignments();
+                teacherNotice(changes.status === "published" ? "Assignment published for students." : "Assignment moved to drafts.", "success");
+            } catch (error) { teacherNotice(error.message, "error"); }
+        }
+
+        teacherLogin.addEventListener("submit", async event => {
+            event.preventDefault();
+            try {
+                teacherSession = await teacherRequest("/auth/v1/token?grant_type=password", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        email: document.getElementById("teacher-email").value.trim(),
+                        password: document.getElementById("teacher-password").value
+                    })
+                });
+                sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(teacherSession));
+                await checkTeacherAccess();
+            } catch (error) {
+                teacherNotice(error.message, "error");
+            }
+        });
+
+        document.getElementById("teacher-signout").addEventListener("click", () => {
+            teacherSession = null;
+            sessionStorage.removeItem(SESSION_STORAGE_KEY);
+            teacherLogin.hidden = false;
+            teacherEditor.hidden = true;
+            teacherNotice("Signed out.", "success");
+        });
+
+        document.getElementById("student-roster-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            let students;
+            try {
+                const lines = document.getElementById("student-roster-input").value
+                    .split(/\r?\n/)
+                    .map(line => line.trim())
+                    .filter(Boolean);
+                students = lines.map((line, index) => {
+                    const parts = line.split(",");
+                    if (parts.length !== 2 || !parts[0].trim() || !parts[1].trim()) {
+                        throw new Error("Line " + (index + 1) + " must use First name,Last name format.");
+                    }
+                    const firstName = parts[0].trim();
+                    const lastName = parts[1].trim();
+                    if (firstName.length > 50 || lastName.length > 50) {
+                        throw new Error("Line " + (index + 1) + " has a name longer than 50 characters.");
+                    }
+                    return { firstName, lastName };
+                });
+                if (!students.length) throw new Error("Enter at least one student name.");
+            } catch (error) {
+                teacherNotice(error.message, "error");
+                return;
+            }
+            const button = document.getElementById("add-roster-students");
+            button.disabled = true;
+            let addedCount = 0;
+            try {
+                for (const student of students) {
+                    await teacherRequest("/rest/v1/rpc/add_student_to_roster", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            p_first_name: student.firstName,
+                            p_last_name: student.lastName
+                        })
+                    });
+                    addedCount += 1;
+                }
+                document.getElementById("student-roster-input").value = "";
+                await loadStudentRoster();
+                teacherNotice(addedCount + (addedCount === 1 ? " student added to" : " students added to") + " the roster.", "success");
+            } catch (error) {
+                try {
+                    await loadStudentRoster();
+                    teacherNotice(addedCount
+                        ? addedCount + " student names were processed before this error: " + error.message
+                        : error.message, "error");
+                } catch (rosterError) {
+                    teacherNotice(error.message + " The roster refresh also failed: " + rosterError.message, "error");
+                }
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        document.getElementById("teacher-assignment-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            const resourceUrl = document.getElementById("teacher-assignment-url").value.trim();
+            if (resourceUrl && !teacherSafeUrl(resourceUrl)) {
+                teacherNotice("Use a web link or a relative class-tool link such as binaryToDecimal.html.", "error");
+                return;
+            }
+            const dueDate = document.getElementById("teacher-assignment-due-date").value;
+            const record = {
+                title: document.getElementById("teacher-assignment-title").value.trim(),
+                course: document.getElementById("teacher-assignment-course").value.trim(),
+                description: document.getElementById("teacher-assignment-description").value.trim(),
+                resource_url: resourceUrl,
+                due_date: dueDate || null,
+                status: document.getElementById("teacher-assignment-status").value
+            };
+            try {
+                if (editingAssignmentId) {
+                    await teacherRequest("/rest/v1/assignments?id=eq." + encodeURIComponent(editingAssignmentId), {
+                        method: "PATCH", headers: { Prefer: "return=minimal" }, body: JSON.stringify(record)
+                    });
+                } else {
+                    await teacherRequest("/rest/v1/assignments", {
+                        method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(record)
+                    });
+                }
+                resetTeacherForm();
+                await loadTeacherAssignments();
+                teacherNotice("Assignment saved.", "success");
+            } catch (error) { teacherNotice(error.message, "error"); }
+        });
+
+        document.getElementById("teacher-cancel-edit").addEventListener("click", resetTeacherForm);
+        document.getElementById("import-class-tools").addEventListener("click", async event => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+                const records = [...document.querySelectorAll(".button-row a.button")].map((link, index) => {
+                    const course = link.classList.contains("orange") ? "ACCEL Cyber Immersion Day"
+                        : link.classList.contains("light-blue") ? "AI Class"
+                        : link.getAttribute("href") === "mockCreatePT.html" ? "AP CSP" : "Cyber 101";
+                    return { title: link.textContent.trim(), course, resource_url: link.getAttribute("href"), description: "", due_date: null, status: "draft", position: index };
+                });
+                if (!records.length) throw new Error("No class tool links were found to import.");
+                await teacherRequest("/rest/v1/assignments", {
+                    method: "POST", headers: { Prefer: "return=minimal" }, body: JSON.stringify(records)
+                });
+                await loadTeacherAssignments();
+                teacherNotice("Existing class tools imported as drafts. Edit and publish only the assignments you want students to see.", "success");
+            } catch (error) { teacherNotice(error.message, "error"); }
+            finally { button.disabled = false; }
+        });
+
+        if (teacherSession || window.location.hash === "#teacher-tools") {
+            document.getElementById("teacher-tools").open = true;
+        }
+        if (teacherSession) {
+            checkTeacherAccess();
+        }
+    </script>
 </body>
 </html>
