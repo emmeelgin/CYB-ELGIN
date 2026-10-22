@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f8d8e8">
+    <title>Class Assignments | Mrs. Wright</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --pink: #c83e7d;
+            --pink-light: #f9e2ed;
+            --blue: #2369a8;
+            --blue-light: #e4f1fc;
+            --yellow: #f5c842;
+            --yellow-light: #fff6cf;
+            --ink: #24334a;
+            --muted: #59677a;
+            --paper: #fffdf9;
+            --line: #dce3eb;
+            --shadow: 0 8px 24px rgb(36 51 74 / 8%);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: "Trebuchet MS", Arial, sans-serif;
+            line-height: 1.55;
+        }
+        a { color: var(--blue); }
+        button, input, select, textarea { font: inherit; }
+        button, .button-link {
+            display: inline-flex;
+            min-height: 42px;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 0;
+            border-radius: 10px;
+            padding: 9px 15px;
+            background: var(--blue);
+            color: white;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        button:hover, .button-link:hover { filter: brightness(.93); }
+        button:focus-visible, a:focus-visible, input:focus-visible,
+        select:focus-visible, textarea:focus-visible {
+            outline: 3px solid var(--yellow);
+            outline-offset: 2px;
+        }
+        button.secondary { background: var(--pink); }
+        button.soft { background: var(--blue-light); color: var(--blue); }
+        button.danger { background: #a32f40; }
+        button:disabled { cursor: wait; opacity: .65; }
+        .hero {
+            padding: 30px 20px 27px;
+            background: var(--pink-light);
+            border-bottom: 6px solid var(--yellow);
+        }
+        .hero-inner, main, footer { width: min(1040px, calc(100% - 32px)); margin-inline: auto; }
+        .topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .brand { color: var(--pink); font-size: .95rem; font-weight: 800; }
+        .home-link { font-weight: 700; }
+        h1 { max-width: 700px; margin: 22px 0 5px; font-size: clamp(2rem, 5vw, 3.35rem); line-height: 1.08; }
+        .hero p { max-width: 650px; margin: 10px 0 0; color: var(--muted); font-size: 1.1rem; }
+        main { padding-block: 27px 50px; }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: end;
+            gap: 12px;
+            margin-bottom: 22px;
+            padding: 16px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+        .toolbar .field { flex: 1 1 190px; }
+        .toolbar label, .form-grid label { display: block; margin-bottom: 5px; font-size: .9rem; font-weight: 700; }
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid #aab8c8;
+            border-radius: 8px;
+            padding: 10px 11px;
+            color: var(--ink);
+            background: white;
+        }
+        textarea { min-height: 96px; resize: vertical; }
+        .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 13px; }
+        h2 { margin: 0; font-size: 1.55rem; }
+        .count { border-radius: 20px; padding: 3px 10px; background: var(--yellow-light); font-size: .9rem; font-weight: 700; }
+        .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 285px), 1fr)); gap: 15px; }
+        .card {
+            display: flex;
+            min-height: 190px;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 19px;
+            border: 1px solid var(--line);
+            border-top: 5px solid var(--blue);
+            border-radius: 14px;
+            background: white;
+            box-shadow: var(--shadow);
+        }
+        .card:nth-child(3n + 2) { border-top-color: var(--pink); }
+        .card:nth-child(3n) { border-top-color: var(--yellow); }
+        .course-tag { margin: 0 0 7px; color: var(--blue); font-size: .82rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+        .card h3 { margin: 0 0 8px; font-size: 1.2rem; line-height: 1.25; }
+        .card p { margin: 0 0 16px; color: var(--muted); white-space: pre-wrap; }
+        .card .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: auto; }
+        .empty, .panel {
+            padding: 20px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: white;
+        }
+        .empty { text-align: center; background: var(--yellow-light); }
+        .teacher-area { margin-top: 38px; }
+        .teacher-toggle { background: var(--pink); }
+        .teacher-panel { margin-top: 14px; padding: 20px; border: 1px solid #edbfd4; border-radius: 14px; background: #fff8fb; }
+        .teacher-panel h2 { margin-bottom: 8px; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+        .form-grid .wide { grid-column: 1 / -1; }
+        .form-actions, .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .admin-list { display: grid; gap: 10px; margin-top: 17px; }
+        .admin-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+        .admin-row h3 { margin: 0; font-size: 1rem; }
+        .admin-row p { margin: 4px 0 0; color: var(--muted); font-size: .9rem; }
+        .status { display: inline-block; margin-top: 5px; padding: 2px 8px; border-radius: 20px; background: var(--yellow-light); font-size: .78rem; font-weight: 800; }
+        .status.published { background: #dff4e8; color: #17613b; }
+        .message { margin: 12px 0; padding: 10px 12px; border-radius: 8px; background: var(--blue-light); }
+        .message.error { background: #ffebeb; color: #8e2525; }
+        .message.success { background: #e1f5e8; color: #195b34; }
+        .muted { color: var(--muted); }
+        details { margin-top: 20px; }
+        details summary { cursor: pointer; font-weight: 700; }
+        .setup { max-width: 700px; margin-top: 12px; padding: 16px; border-radius: 12px; background: var(--blue-light); }
+        .setup ol { padding-left: 22px; }
+        footer { padding: 0 0 28px; color: var(--muted); font-size: .9rem; }
+        [hidden] { display: none !important; }
+        @media (max-width: 620px) {
+            .topline { align-items: flex-start; flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-grid .wide { grid-column: auto; }
+            .admin-row { align-items: flex-start; flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="topline">
+                <span class="brand">MRS. WRIGHT'S CLASSROOM</span>
+                <a class="home-link" href="index.html">← Back to class tools</a>
+            </div>
+            <h1>What are we working on?</h1>
+            <p>Find the activities your teacher has shared. Open the activity here; turn in your work through Canvas.</p>
+        </div>
+    </header>
+    <main>
+        <section aria-labelledby="assignments-heading">
+            <div class="section-heading">
+                <h2 id="assignments-heading">Upcoming assignments</h2>
+                <span class="count" id="assignment-count">0 assignments</span>
+            </div>
+            <div class="toolbar">
+                <div class="field">
+                    <label for="search">Search activities</label>
+                    <input id="search" type="search" placeholder="Try “Python” or “password”">
+                </div>
+                <div class="field">
+                    <label for="course-filter">Class</label>
+                    <select id="course-filter"><option value="">All classes</option></select>
+                </div>
+                <button id="refresh-button" class="soft" type="button">Refresh</button>
+            </div>
+            <div id="student-message" class="message" role="status" hidden></div>
+            <div id="student-cards" class="cards" aria-live="polite"></div>
+            <div id="student-empty" class="empty" hidden>
+                <h3>Nothing posted just yet</h3>
+                <p>When your teacher publishes an activity, it will show up here.</p>
+            </div>
+        </section>
+
+        <section class="teacher-area" aria-labelledby="teacher-heading">
+            <button id="teacher-toggle" class="teacher-toggle" type="button" aria-expanded="false" aria-controls="teacher-panel">Teacher tools</button>
+            <div id="teacher-panel" class="teacher-panel" hidden>
+                <h2 id="teacher-heading">Teacher workspace</h2>
+                <p class="muted">Save drafts while you prepare. Publishing makes an assignment visible to students. Canvas remains the place to submit work.</p>
+                <div id="teacher-message" class="message" role="status" hidden></div>
+                <form id="auth-form">
+                    <div class="form-grid">
+                        <div>
+                            <label for="teacher-email">Teacher email</label>
+                            <input id="teacher-email" type="email" autocomplete="username" required>
+                        </div>
+                        <div>
+                            <label for="teacher-password">Password</label>
+                            <input id="teacher-password" type="password" autocomplete="current-password" required minlength="6">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit">Sign in</button>
+                        <button id="signup-button" class="soft" type="button">Create account</button>
+                    </div>
+                </form>
+                <div id="editor" hidden>
+                    <div class="section-heading">
+                        <h2>Manage assignments</h2>
+                        <button id="signout-button" class="soft" type="button">Sign out</button>
+                    </div>
+                    <p id="teacher-identity" class="muted"></p>
+                    <button id="import-tools-button" class="secondary" type="button" hidden>Import existing class tools as drafts</button>
+                    <form id="assignment-form" class="panel" style="margin-top:14px">
+                        <h3 id="editor-title">Add an assignment</h3>
+                        <div class="form-grid">
+                            <div>
+                                <label for="assignment-title">Assignment name</label>
+                                <input id="assignment-title" maxlength="120" required>
+                            </div>
+                            <div>
+                                <label for="assignment-course">Class</label>
+                                <input id="assignment-course" list="course-options" value="Cyber 101" required>
+                                <datalist id="course-options">
+                                    <option value="Cyber 101"></option>
+                                    <option value="AI Class"></option>
+                                    <option value="ACCEL Cyber Immersion Day"></option>
+                                    <option value="AP CSP"></option>
+                                </datalist>
+                            </div>
+                            <div class="wide">
+                                <label for="assignment-description">What should students know?</label>
+                                <textarea id="assignment-description" maxlength="2000" placeholder="Add a short, student-friendly description or instructions."></textarea>
+                            </div>
+                            <div class="wide">
+                                <label for="assignment-url">Activity link (optional)</label>
+                                <input id="assignment-url" type="text" placeholder="Example: binaryToDecimal.html or a Canvas link">
+                            </div>
+                            <div>
+                                <label for="assignment-status">Visibility</label>
+                                <select id="assignment-status">
+                                    <option value="draft">Draft — only teachers can see it</option>
+                                    <option value="published">Published — students can see it</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button id="save-assignment" type="submit">Save assignment</button>
+                            <button id="cancel-edit" class="soft" type="button" hidden>Cancel edit</button>
+                        </div>
+                    </form>
+                    <div id="admin-list" class="admin-list"></div>
+                </div>
+                <details>
+                    <summary>First-time setup and backend connection</summary>
+                    <div class="setup">
+                        <ol>
+                            <li>Create a free project at <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer">Supabase</a>.</li>
+                            <li>Open its SQL Editor, paste in <code>supabase-setup.sql</code>, and run it. The script creates the tables and access rules.</li>
+                            <li>In Supabase Authentication, create your teacher account. In the final statement of the SQL script, replace <code>teacher@example.com</code> with your account email and run that statement to grant teacher access.</li>
+                            <li>Open Project Settings → API and copy the Project URL and the public anon/publishable key (never use a service-role or secret key in this website).</li>
+                            <li>Enter those values below. To make the site ready for every student, put them in the <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> constants in this file before publishing it. The public key is safe to expose because database access is restricted by the SQL policies.</li>
+                        </ol>
+                        <form id="config-form" class="form-grid">
+                            <div class="wide">
+                                <label for="supabase-url">Supabase Project URL</label>
+                                <input id="supabase-url" type="url" placeholder="https://your-project.supabase.co" required>
+                            </div>
+                            <div class="wide">
+                                <label for="supabase-key">Public anon / publishable key</label>
+                                <input id="supabase-key" type="password" autocomplete="off" required>
+                            </div>
+                            <div class="wide form-actions">
+                                <button type="submit">Save backend connection on this device</button>
+                                <button id="clear-config" class="soft" type="button">Clear device settings</button>
+                            </div>
+                        </form>
+                    </div>
+                </details>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <a href="index.html">Class tools</a> · Activities are for practice and classwork; submit assignments through Canvas.
+    </footer>
+    <script>
+        // Supabase's public anon key is designed for browser use; row-level security is the access boundary.
+        const SUPABASE_URL = "";
+        const SUPABASE_ANON_KEY = "";
+        const CONFIG_STORAGE_KEY = "wright-class-board-config";
+        const SESSION_STORAGE_KEY = "wright-class-board-session";
+
+        const starterTools = [
+            ["Binary To Decimal", "Cyber 101", "binaryToDecimal.html"],
+            ["Hex Conversion", "Cyber 101", "hexConversion.html"],
+            ["ELT2 Review Podcast", "Cyber 101", "ELT2ReviewPodcast.html"],
+            ["Python Expressions", "Cyber 101", "python expressions.html"],
+            ["Conditional Expressions", "Cyber 101", "conditional-expressions.html"],
+            ["Strings 1", "Cyber 101", "strings1.html"],
+            ["Strings 2", "Cyber 101", "strings2.html"],
+            ["Strings 3", "Cyber 101", "strings3.html"],
+            ["Casting Practice", "Cyber 101", "casting.html"],
+            ["ELT3 Debug", "Cyber 101", "ELT3Debug.html"],
+            ["Mod Math", "Cyber 101", "mod math.html"],
+            ["Return Boolean Values Lab", "Cyber 101", "returnBooleanValues.html"],
+            ["Virtual Day Reading Loops", "Cyber 101", "virtualDayReadingLoops.html"],
+            ["ELT5 Reassessment Study Guide", "Cyber 101", "ELT5ReassessmentStudyGuide.html"],
+            ["Back to School Code Review", "Cyber 101", "backToSchoolCodeReview.html"],
+            ["Reading List Commands", "Cyber 101", "readlingListCommands.html"],
+            ["Lists and Loops Practice", "Cyber 101", "listsAndLoopsPractice.html"],
+            ["ELT7 Review MC Questions", "Cyber 101", "ELT7ReviewMCQuestions.html"],
+            ["Be The Reader", "Cyber 101", "be-the-reader.html"],
+            ["Cyber101 Typing 1", "Cyber 101", "typing1.html"],
+            ["Pixel Examiner", "Cyber 101", "rgbToPixel.html"],
+            ["RGB Colors", "Cyber 101", "RGB Colors.html"],
+            ["Rail Fence", "Cyber 101", "railfence.html"],
+            ["Snowflakes Lab", "Cyber 101", "snowflakes.html"],
+            ["ELT5 Valid Credit Card Lab", "Cyber 101", "elt5-valid-credit-card-lab.html"],
+            ["Mars Rover Command and Control Lab", "Cyber 101", "mars-rover-command-and-control.html"],
+            ["Weather Station Practice: Selection Statements", "Cyber 101", "weatherstationPracticeSelectionStatemetns.html"],
+            ["Red Light Camera Station Lab", "Cyber 101", "redLightCameraStation.html"],
+            ["SentinelStore Lab", "Cyber 101", "sentinelstore-lab.html"],
+            ["Grade Scale Debug Lab", "Cyber 101", "gradeScaleDebugLab.html"],
+            ["Dino Dictionaries Lab", "Cyber 101", "dinoDictionariesLab.html"],
+            ["Mock Create PT", "AP CSP", "mockCreatePT.html"],
+            ["Soccer Field Lab", "Cyber 101", "soccerFieldLab.html"],
+            ["Glacier Measurements", "Cyber 101", "glacierMeasurements.html"],
+            ["Password Audit Lab", "Cyber 101", "passwordAuditLab.html"],
+            ["ELT6 Iteration Reassessment Review", "Cyber 101", "ELT6IteratonReasesssmentReview.html"],
+            ["Password Lab", "ACCEL Cyber Immersion Day", "password-lab.html"],
+            ["Steg Lab", "ACCEL Cyber Immersion Day", "steg-lab.html"],
+            ["Basic Password Checker Lab", "ACCEL Cyber Immersion Day", "basicPasswordCheckerLab.html"],
+            ["QR Code Lab", "ACCEL Cyber Immersion Day", "qrCodeLab.html"],
+            ["Phishing Lab", "ACCEL Cyber Immersion Day", "phishing-lab.html"],
+            ["Diffie-Hellman Key Exchange", "ACCEL Cyber Immersion Day", "diffie-hellman-key-exchange.html"],
+            ["KNN: Classify Colors", "AI Class", "knnClassifyColors.html"],
+            ["KNN: Design Your Own", "AI Class", "knnDesignYourOwn.html"],
+            ["PhotoVoice AutoEndooder", "AI Class", "photoVoiceAutoEndooder.html"],
+            ["Sound Map Tool", "AI Class", "sound-map-tool.html"],
+            ["RGB Zoom", "AI Class", "rgb-zoom.html"],
+            ["Cyber Sound", "AI Class", "cyber-sound.html"],
+            ["Engineering Report", "AI Class", "engineering-report.html"]
+        ];
+
+        const elements = {
+            search: document.getElementById("search"),
+            courseFilter: document.getElementById("course-filter"),
+            studentCards: document.getElementById("student-cards"),
+            studentEmpty: document.getElementById("student-empty"),
+            studentMessage: document.getElementById("student-message"),
+            assignmentCount: document.getElementById("assignment-count"),
+            teacherToggle: document.getElementById("teacher-toggle"),
+            teacherPanel: document.getElementById("teacher-panel"),
+            teacherMessage: document.getElementById("teacher-message"),
+            authForm: document.getElementById("auth-form"),
+            editor: document.getElementById("editor"),
+            assignmentForm: document.getElementById("assignment-form"),
+            adminList: document.getElementById("admin-list")
+        };
+        let config = readConfig();
+        let session = readSession();
+        let assignments = [];
+        let editingId = null;
+
+        function readConfig() {
+            const saved = localStorage.getItem(CONFIG_STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.url && parsed.key) return parsed;
+                } catch {
+                    localStorage.removeItem(CONFIG_STORAGE_KEY);
+                }
+            }
+            return { url: SUPABASE_URL, key: SUPABASE_ANON_KEY };
+        }
+
+        function readSession() {
+            const saved = sessionStorage.getItem(SESSION_STORAGE_KEY);
+            if (!saved) return null;
+            try {
+                return JSON.parse(saved);
+            } catch {
+                sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                return null;
+            }
+        }
+
+        function showMessage(element, text, kind) {
+            element.textContent = text;
+            element.className = "message" + (kind ? " " + kind : "");
+            element.hidden = !text;
+        }
+
+        function backendReady() {
+            return Boolean(config.url && config.key);
+        }
+
+        function apiUrl(path) {
+            return config.url.replace(/\/$/, "") + path;
+        }
+
+        async function refreshSession() {
+            if (!session || !session.refresh_token) return false;
+            const response = await fetch(apiUrl("/auth/v1/token?grant_type=refresh_token"), {
+                method: "POST",
+                headers: { apikey: config.key, "Content-Type": "application/json" },
+                body: JSON.stringify({ refresh_token: session.refresh_token })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                session = null;
+                sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                return false;
+            }
+            session = data;
+            sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+            return true;
+        }
+
+        async function request(path, options, retrying) {
+            if (!backendReady()) throw new Error("Connect this page to Supabase in Teacher tools → First-time setup.");
+            const headers = new Headers(options && options.headers ? options.headers : {});
+            headers.set("apikey", config.key);
+            headers.set("Authorization", "Bearer " + (session ? session.access_token : config.key));
+            if (options && options.body && !headers.has("Content-Type")) headers.set("Content-Type", "application/json");
+            const response = await fetch(apiUrl(path), { ...options, headers });
+            if (response.status === 401 && session && !retrying && await refreshSession()) {
+                return request(path, options, true);
+            }
+            const body = await response.text();
+            let data = null;
+            if (body) {
+                try {
+                    data = JSON.parse(body);
+                } catch {
+                    data = body;
+                }
+            }
+            if (!response.ok) {
+                const detail = data && (data.message || data.msg || data.error_description || data.error);
+                throw new Error(detail || "The request failed (" + response.status + "). Check the backend setup and try again.");
+            }
+            return data;
+        }
+
+        function safeResourceUrl(value) {
+            if (!value) return "";
+            try {
+                const parsed = new URL(value, window.location.href);
+                if (parsed.protocol !== "https:" && parsed.protocol !== "http:") return "";
+                return parsed.href;
+            } catch {
+                return "";
+            }
+        }
+
+        function makeCard(assignment) {
+            const card = document.createElement("article");
+            card.className = "card";
+            const course = document.createElement("p");
+            course.className = "course-tag";
+            course.textContent = assignment.course || "Class";
+            const title = document.createElement("h3");
+            title.textContent = assignment.title;
+            card.append(course, title);
+            if (assignment.description) {
+                const description = document.createElement("p");
+                description.textContent = assignment.description;
+                card.append(description);
+            }
+            const href = safeResourceUrl(assignment.resource_url);
+            if (href) {
+                const actions = document.createElement("div");
+                actions.className = "card-actions";
+                const link = document.createElement("a");
+                link.className = "button-link";
+                link.href = href;
+                link.textContent = "Open activity";
+                if (new URL(href).origin !== window.location.origin) {
+                    link.target = "_blank";
+                    link.rel = "noreferrer";
+                }
+                actions.append(link);
+                card.append(actions);
+            }
+            return card;
+        }
+
+        function renderStudents() {
+            const term = elements.search.value.trim().toLowerCase();
+            const course = elements.courseFilter.value;
+            const visible = assignments.filter(item => item.status === "published"
+                && (!course || item.course === course)
+                && (!term || (item.title + " " + item.course + " " + item.description).toLowerCase().includes(term)));
+            elements.studentCards.replaceChildren(...visible.map(makeCard));
+            elements.studentEmpty.hidden = visible.length !== 0;
+            elements.assignmentCount.textContent = visible.length + (visible.length === 1 ? " assignment" : " assignments");
+            const selected = elements.courseFilter.value;
+            const courses = [...new Set(assignments.filter(item => item.status === "published").map(item => item.course).filter(Boolean))].sort();
+            elements.courseFilter.replaceChildren(new Option("All classes", ""));
+            for (const name of courses) elements.courseFilter.add(new Option(name, name));
+            if (courses.includes(selected)) elements.courseFilter.value = selected;
+        }
+
+        function renderAdmin() {
+            elements.adminList.replaceChildren();
+            const sorted = [...assignments].sort((a, b) => a.course.localeCompare(b.course) || a.title.localeCompare(b.title));
+            for (const item of sorted) {
+                const row = document.createElement("article");
+                row.className = "admin-row";
+                const summary = document.createElement("div");
+                const title = document.createElement("h3");
+                title.textContent = item.title;
+                const description = document.createElement("p");
+                description.textContent = item.course + (item.description ? " · " + item.description : "");
+                const status = document.createElement("span");
+                status.className = "status" + (item.status === "published" ? " published" : "");
+                status.textContent = item.status === "published" ? "Published" : "Draft";
+                summary.append(title, description, status);
+                const actions = document.createElement("div");
+                actions.className = "admin-actions";
+                const edit = document.createElement("button");
+                edit.className = "soft";
+                edit.type = "button";
+                edit.textContent = "Edit";
+                edit.addEventListener("click", () => startEdit(item));
+                const visibility = document.createElement("button");
+                visibility.type = "button";
+                visibility.textContent = item.status === "published" ? "Unpublish" : "Publish";
+                visibility.addEventListener("click", () => changeStatus(item, item.status === "published" ? "draft" : "published"));
+                const remove = document.createElement("button");
+                remove.className = "danger";
+                remove.type = "button";
+                remove.textContent = "Delete";
+                remove.addEventListener("click", () => deleteAssignment(item));
+                actions.append(edit, visibility, remove);
+                row.append(summary, actions);
+                elements.adminList.append(row);
+            }
+            document.getElementById("import-tools-button").hidden = assignments.length !== 0;
+        }
+
+        async function loadAssignments() {
+            if (!backendReady()) {
+                showMessage(elements.studentMessage, "The class board needs its Supabase Project URL and public key before it can load assignments.", "error");
+                renderStudents();
+                return;
+            }
+            try {
+                assignments = await request("/rest/v1/assignments?select=*&order=position.asc,created_at.desc");
+                showMessage(elements.studentMessage, "", "");
+                renderStudents();
+                if (session && !elements.editor.hidden) renderAdmin();
+            } catch (error) {
+                showMessage(elements.studentMessage, error.message, "error");
+                renderStudents();
+            }
+        }
+
+        async function checkTeacherAccess() {
+            if (!session) return;
+            try {
+                const rows = await request("/rest/v1/teachers?select=user_id&user_id=eq." + encodeURIComponent(session.user.id));
+                elements.authForm.hidden = rows.length > 0;
+                elements.editor.hidden = rows.length === 0;
+                document.getElementById("teacher-identity").textContent = session.user.email;
+                if (!rows.length) {
+                    showMessage(elements.teacherMessage, "This account is signed in, but it does not have teacher access yet. Follow the SQL setup step to add your account.", "error");
+                    return;
+                }
+                showMessage(elements.teacherMessage, "", "");
+                renderAdmin();
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            }
+        }
+
+        function startEdit(item) {
+            editingId = item.id;
+            document.getElementById("assignment-title").value = item.title;
+            document.getElementById("assignment-course").value = item.course;
+            document.getElementById("assignment-description").value = item.description || "";
+            document.getElementById("assignment-url").value = item.resource_url || "";
+            document.getElementById("assignment-status").value = item.status;
+            document.getElementById("editor-title").textContent = "Edit assignment";
+            document.getElementById("save-assignment").textContent = "Save changes";
+            document.getElementById("cancel-edit").hidden = false;
+            document.getElementById("assignment-title").focus();
+        }
+
+        function resetEditor() {
+            editingId = null;
+            elements.assignmentForm.reset();
+            document.getElementById("assignment-course").value = "Cyber 101";
+            document.getElementById("assignment-status").value = "draft";
+            document.getElementById("editor-title").textContent = "Add an assignment";
+            document.getElementById("save-assignment").textContent = "Save assignment";
+            document.getElementById("cancel-edit").hidden = true;
+        }
+
+        function validResourceUrl(value) {
+            if (!value.trim()) return true;
+            const parsed = safeResourceUrl(value.trim());
+            return Boolean(parsed);
+        }
+
+        elements.search.addEventListener("input", renderStudents);
+        elements.courseFilter.addEventListener("change", renderStudents);
+        document.getElementById("refresh-button").addEventListener("click", loadAssignments);
+        elements.teacherToggle.addEventListener("click", () => {
+            const opening = elements.teacherPanel.hidden;
+            elements.teacherPanel.hidden = !opening;
+            elements.teacherToggle.setAttribute("aria-expanded", String(opening));
+        });
+        elements.authForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            const email = document.getElementById("teacher-email").value.trim();
+            const password = document.getElementById("teacher-password").value;
+            try {
+                const data = await request("/auth/v1/token?grant_type=password", {
+                    method: "POST",
+                    body: JSON.stringify({ email, password })
+                });
+                session = data;
+                sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+                showMessage(elements.teacherMessage, "", "");
+                await checkTeacherAccess();
+                if (session && elements.editor.hidden) {
+                    session = null;
+                    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                } else {
+                    await loadAssignments();
+                }
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            }
+        });
+        document.getElementById("signup-button").addEventListener("click", async () => {
+            const email = document.getElementById("teacher-email").value.trim();
+            const password = document.getElementById("teacher-password").value;
+            if (!email || password.length < 6) {
+                showMessage(elements.teacherMessage, "Enter your email and a password with at least 6 characters first.", "error");
+                return;
+            }
+            try {
+                const data = await request("/auth/v1/signup", {
+                    method: "POST",
+                    body: JSON.stringify({ email, password })
+                });
+                if (data.access_token) {
+                    session = data;
+                    sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
+                    await checkTeacherAccess();
+                }
+                showMessage(elements.teacherMessage, data.access_token
+                    ? "Account created. Grant it teacher access using the SQL setup step, then sign in."
+                    : "Account created. Check your email to confirm it, grant it teacher access using the SQL setup step, then sign in.", "success");
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            }
+        });
+        document.getElementById("signout-button").addEventListener("click", () => {
+            session = null;
+            sessionStorage.removeItem(SESSION_STORAGE_KEY);
+            elements.editor.hidden = true;
+            elements.authForm.hidden = false;
+            showMessage(elements.teacherMessage, "Signed out.", "success");
+        });
+        elements.assignmentForm.addEventListener("submit", async event => {
+            event.preventDefault();
+            const resourceUrl = document.getElementById("assignment-url").value.trim();
+            if (!validResourceUrl(resourceUrl)) {
+                showMessage(elements.teacherMessage, "Use a web link or a relative class-tool link such as binaryToDecimal.html.", "error");
+                return;
+            }
+            const record = {
+                title: document.getElementById("assignment-title").value.trim(),
+                course: document.getElementById("assignment-course").value.trim(),
+                description: document.getElementById("assignment-description").value.trim(),
+                resource_url: resourceUrl,
+                status: document.getElementById("assignment-status").value
+            };
+            try {
+                if (editingId) {
+                    await request("/rest/v1/assignments?id=eq." + encodeURIComponent(editingId), {
+                        method: "PATCH",
+                        headers: { Prefer: "return=minimal" },
+                        body: JSON.stringify(record)
+                    });
+                } else {
+                    await request("/rest/v1/assignments", {
+                        method: "POST",
+                        headers: { Prefer: "return=minimal" },
+                        body: JSON.stringify(record)
+                    });
+                }
+                resetEditor();
+                showMessage(elements.teacherMessage, "Assignment saved.", "success");
+                await loadAssignments();
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            }
+        });
+        document.getElementById("cancel-edit").addEventListener("click", resetEditor);
+
+        async function changeStatus(item, status) {
+            try {
+                await request("/rest/v1/assignments?id=eq." + encodeURIComponent(item.id), {
+                    method: "PATCH",
+                    headers: { Prefer: "return=minimal" },
+                    body: JSON.stringify({ status })
+                });
+                showMessage(elements.teacherMessage, status === "published" ? "Assignment published for students." : "Assignment moved back to drafts.", "success");
+                await loadAssignments();
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            }
+        }
+
+        async function deleteAssignment(item) {
+            if (!window.confirm("Delete “" + item.title + "”? This cannot be undone.")) return;
+            try {
+                await request("/rest/v1/assignments?id=eq." + encodeURIComponent(item.id), { method: "DELETE" });
+                showMessage(elements.teacherMessage, "Assignment deleted.", "success");
+                await loadAssignments();
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            }
+        }
+
+        document.getElementById("import-tools-button").addEventListener("click", async event => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+                const records = starterTools.map(([title, course, resource_url], index) => ({
+                    title, course, resource_url, description: "", status: "draft", position: index
+                }));
+                await request("/rest/v1/assignments", {
+                    method: "POST",
+                    headers: { Prefer: "return=minimal" },
+                    body: JSON.stringify(records)
+                });
+                showMessage(elements.teacherMessage, "Existing class tools imported as drafts. Edit and publish only the assignments you want students to see.", "success");
+                await loadAssignments();
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message, "error");
+            } finally {
+                button.disabled = false;
+            }
+        });
+
+        document.getElementById("config-form").addEventListener("submit", async event => {
+            event.preventDefault();
+            const url = document.getElementById("supabase-url").value.trim().replace(/\/$/, "");
+            const key = document.getElementById("supabase-key").value.trim();
+            try {
+                const parsed = new URL(url);
+                if (parsed.protocol !== "https:") throw new Error("Use the HTTPS Project URL from Supabase.");
+                if (!key) throw new Error("Enter the public anon or publishable key.");
+                const response = await fetch(url + "/auth/v1/settings", { headers: { apikey: key } });
+                if (!response.ok) throw new Error("Supabase did not accept that Project URL and key. Check both values.");
+                config = { url, key };
+                localStorage.setItem(CONFIG_STORAGE_KEY, JSON.stringify(config));
+                session = null;
+                sessionStorage.removeItem(SESSION_STORAGE_KEY);
+                showMessage(elements.studentMessage, "", "");
+                showMessage(elements.teacherMessage, "Backend connected on this device.", "success");
+                await loadAssignments();
+            } catch (error) {
+                showMessage(elements.teacherMessage, error.message || "Check the Project URL and public key.", "error");
+            }
+        });
+
+        document.getElementById("clear-config").addEventListener("click", () => {
+            localStorage.removeItem(CONFIG_STORAGE_KEY);
+            sessionStorage.removeItem(SESSION_STORAGE_KEY);
+            session = null;
+            config = { url: SUPABASE_URL, key: SUPABASE_ANON_KEY };
+            showMessage(elements.teacherMessage, "Saved backend settings cleared from this device.", "success");
+            loadAssignments();
+        });
+
+        if (session) {
+            elements.teacherPanel.hidden = false;
+            elements.teacherToggle.setAttribute("aria-expanded", "true");
+            checkTeacherAccess().then(loadAssignments);
+        } else {
+            loadAssignments();
+        }
+    </script>
+</body>
+</html>
