@@ -262,8 +262,8 @@
                             <li>Create a free project at <a href="https://supabase.com/dashboard" target="_blank" rel="noreferrer">Supabase</a>.</li>
                             <li>Open its SQL Editor, paste in <code>supabase-setup.sql</code>, and run it. The script creates the tables and access rules.</li>
                             <li>In Supabase Authentication, create your teacher account. In the final statement of the SQL script, replace <code>teacher@example.com</code> with your account email and run that statement to grant teacher access.</li>
-                            <li>Open Project Settings → API and copy the Project URL and the public anon/publishable key (never use a service-role or secret key in this website).</li>
-                            <li>Enter those values below. To make the site ready for every student, put them in the <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> constants in this file before publishing it. The public key is safe to expose because database access is restricted by the SQL policies.</li>
+                            <li>The Project URL is already set for this class backend. Open Project Settings → API and copy the public anon/publishable key (never use a service-role or secret key in this website).</li>
+                            <li>Enter the public key below to test on this device. To make the site ready for every student, put it in the <code>SUPABASE_ANON_KEY</code> constant in this file before publishing it. The public key is safe to expose because database access is restricted by the SQL policies.</li>
                         </ol>
                         <form id="config-form" class="form-grid">
                             <div class="wide">
@@ -289,8 +289,8 @@
     </footer>
     <script>
         // Supabase's public anon key is designed for browser use; row-level security is the access boundary.
-        const SUPABASE_URL = "";
-        const SUPABASE_ANON_KEY = "";
+        const SUPABASE_URL = "https://ooanwynnylxfotgkjnvw.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_4f2BeBb86Rn-C0Sjrqh5Kw_M2mri7id";
         const CONFIG_STORAGE_KEY = "wright-class-board-config";
         const SESSION_STORAGE_KEY = "wright-class-board-session";
 
